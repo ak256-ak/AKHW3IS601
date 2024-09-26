@@ -61,11 +61,11 @@ while True:
             print(f"The result of dividing {a} by {b} is {result}.")
         
         elif operation.lower() == 'quit':
-            print("Goodbye!")
+            print("Thank you for using Avneet's Calculator")
             break
 
         else:
             print("Invalid operation. Please choose: +, -, *, or /.")
 
     except ValueError:
-        print("Invalid input. Please enter valid numbers.")
+        print("Invalid input Please enter valid numbers.")
