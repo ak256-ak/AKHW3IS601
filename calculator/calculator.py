@@ -30,7 +30,7 @@ class Calculator:
         Calculator.history.append(Calculation('divide', a, b, result))
         return result
 
-    @classmethod
+   
     def show_history(cls):
         print("Calculation History:")
         for calc in cls.history:
@@ -42,7 +42,7 @@ while True:
     try:
         a = float(input("Please enter a number: "))
         b = float(input("Please enter another number: "))
-        operation = input("What would you like to do? (+, -, *, /) or type 'quit' if you want to exit: ")
+        operation = input("Please chose the operation ? (+, -, *, /) or type 'quit' if you want to exit: ")
 
         if operation == '+':
             result = calc.add(a, b)
