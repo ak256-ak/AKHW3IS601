@@ -42,7 +42,7 @@ while True:
     try:
         a = float(input("Please enter a number: "))
         b = float(input("Please enter another number: "))
-        operation = input("What would you like to do? (+, -, *, /) or type 'quit' to exit: ")
+        operation = input("What would you like to do? (+, -, *, /) or type 'quit' if you want to exit: ")
 
         if operation == '+':
             result = calc.add(a, b)
@@ -65,7 +65,7 @@ while True:
             break
 
         else:
-            print("Invalid operation. Please choose: +, -, *, or /.")
+            print("Invalid operation. Choose one : +, -, *, or /.")
 
     except ValueError:
-        print("Invalid input Please enter valid numbers.")
+        print("Invalid input. Please try again and enter valid numbers.")
