@@ -7,7 +7,7 @@ You can add, subtract, divide and multiplication
 
 #How to run the program 
 
-- clone the repor
+- clone the repo
 -  git clone https://github.com/ak256-ak/IS601Homework3.git
 
 - cd IS601Homework3
