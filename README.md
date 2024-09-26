@@ -13,3 +13,7 @@ You can add, subtract, divide and multiplication
 - cd IS601Homework3
 - run the program python calculator.py
 - eneter the number and choose the operation 
+
+#Resources
+https://www.w3schools.com/python/python_classes.asp
+https://medium.com/the-modern-scientist/python-classes-made-easy-a-beginners-guide-c9634ddca518
