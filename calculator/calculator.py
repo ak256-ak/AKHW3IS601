@@ -9,63 +9,66 @@ class Calculator:
     history = []
 
     def add(self, a, b):
+        """Adding numbers and saving it to the history!"""
         result = a + b
         Calculator.history.append(Calculation('add', a, b, result))
         return result
 
     def subtract(self, a, b):
+        """Subtracting and storing the result for future reference!"""
         result = a - b
         Calculator.history.append(Calculation('subtract', a, b, result))
         return result
 
     def multiply(self, a, b):
+        """Multiplying these two and putting the result in the history!"""
         result = a * b
         Calculator.history.append(Calculation('multiply', a, b, result))
         return result
 
     def divide(self, a, b):
+        """Dividing these numbers, unless you're trying to divide by zero!"""
         if b == 0:
             return "Cannot divide by zero."
         result = a / b
+        if result.is_integer():
+            result = int(result)  # If it's a whole number, return it as an integer
         Calculator.history.append(Calculation('divide', a, b, result))
         return result
 
-   
+    @classmethod
     def show_history(cls):
-        print("Calculation History:")
-        for calc in cls.history:
-            print(f"{calc.operation.capitalize()} of {calc.a} and {calc.b} is {calc.result}.")
-
-calc = Calculator()
-
-while True:
-    try:
-        a = float(input("Please enter a number: "))
-        b = float(input("Please enter another number: "))
-        operation = input("Please chose the operation ? (+, -, *, /) or type 'quit' if you want to exit: ")
-
-        if operation == '+':
-            result = calc.add(a, b)
-            print(f"The result of adding {a} and {b} is {result}.")
-
-        elif operation == '-':
-            result = calc.subtract(a, b)
-            print(f"The result of subtracting {b} from {a} is {result}.")
-
-        elif operation == '*':
-            result = calc.multiply(a, b)
-            print(f"The result of multiplying {a} and {b} is {result}.")
-
-        elif operation == '/':
-            result = calc.divide(a, b)
-            print(f"The result of dividing {a} by {b} is {result}.")
-        
-        elif operation.lower() == 'quit':
-            print("Thank you for using Avneet's Calculator")
-            break
-
+        """Here’s everything you've calculated so far!"""
+        if not cls.history:
+            return "No history available."
         else:
-            print("Invalid operation. Choose one : +, -, *, or /.")
+            history_str = "Calculation History:\n"
+            for calc in cls.history:
+                history_str += f"{calc.operation.capitalize()} of {calc.a} and {calc.b} is {calc.result}\n"
+            return history_str
 
-    except ValueError:
-        print("Invalid input. Please try again and enter valid numbers.")
+    @classmethod
+    def clear_history(cls):
+        """Yeah! History has been cleared!"""
+        cls.history.clear()
+        return "History cleared."
+
+    def calculate_from_input(a, b, operation):
+        """Let's figure out what operation to perform and get the result."""
+        calc = Calculator()
+        try:
+            a = float(a)
+            b = float(b)
+        except ValueError:
+            return f"Oops, {a} or {b} isn't a valid number."
+
+        if operation == 'add':
+            return calc.add(a, b)
+        elif operation == 'subtract':
+            return calc.subtract(a, b)
+        elif operation == 'multiply':
+            return calc.multiply(a, b)
+        elif operation == 'divide':
+            return calc.divide(a, b)
+        else:
+            return f"Unknown operation: {operation}"
