@@ -1,74 +1,88 @@
-class Calculation:
-    def __init__(self, operation, a, b, result):
-        self.operation = operation
-        self.a = a
-        self.b = b
-        self.result = result
+import os
+import importlib
+import multiprocessing
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+def worker(command, result_queue):
+    result_queue.put(command.execute())
+
+class Command:
+    def execute(self):
+        pass
 
 class Calculator:
     history = []
 
-    def add(self, a, b):
-        """Adding numbers and saving it to the history!"""
-        result = a + b
-        Calculator.history.append(Calculation('add', a, b, result))
-        return result
+    def execute_command(self, command: Command):
+        result_queue = multiprocessing.Queue()
 
-    def subtract(self, a, b):
-        """Subtracting and storing the result for future reference!"""
-        result = a - b
-        Calculator.history.append(Calculation('subtract', a, b, result))
-        return result
+        process = multiprocessing.Process(target=worker, args=(command, result_queue))
+        process.start()
+        process.join()
 
-    def multiply(self, a, b):
-        """Multiplying these two and putting the result in the history!"""
-        result = a * b
-        Calculator.history.append(Calculation('multiply', a, b, result))
-        return result
-
-    def divide(self, a, b):
-        """Dividing these numbers, unless you're trying to divide by zero!"""
-        if b == 0:
-            return "Cannot divide by zero."
-        result = a / b
-        if result.is_integer():
-            result = int(result)  # If it's a whole number, return it as an integer
-        Calculator.history.append(Calculation('divide', a, b, result))
+        result = result_queue.get()
+        command.result = result  # Store the result in the command
+        Calculator.history.append(command)
         return result
 
     @classmethod
     def show_history(cls):
-        """Here’s everything you've calculated so far!"""
         if not cls.history:
             return "No history available."
         else:
             history_str = "Calculation History:\n"
             for calc in cls.history:
-                history_str += f"{calc.operation.capitalize()} of {calc.a} and {calc.b} is {calc.result}\n"
+                history_str += f"{calc.__class__.__name__} of {calc.a} and {calc.b} is {calc.result}\n"
             return history_str
 
     @classmethod
     def clear_history(cls):
-        """Yeah! History has been cleared!"""
         cls.history.clear()
         return "History cleared."
 
-    def calculate_from_input(a, b, operation):
-        """Let's figure out what operation to perform and get the result."""
-        calc = Calculator()
-        try:
-            a = float(a)
-            b = float(b)
-        except ValueError:
-            return f"Oops, {a} or {b} isn't a valid number."
+def load_plugins():
+    plugin_directory = './calculator/plugins'
+    plugins = {}
+    for filename in os.listdir(plugin_directory):
+        if filename.endswith('.py') and filename != '__init__.py':
+            module_name = filename[:-3]
+            module = importlib.import_module(f'calculator.plugins.{module_name}')
+            command_name = module_name.capitalize() + "Command"
+            plugins[module_name] = getattr(module, command_name)
+    return plugins
 
-        if operation == 'add':
-            return calc.add(a, b)
-        elif operation == 'subtract':
-            return calc.subtract(a, b)
-        elif operation == 'multiply':
-            return calc.multiply(a, b)
-        elif operation == 'divide':
-            return calc.divide(a, b)
+def show_menu(plugins):
+    print("Available commands:")
+    for command_name in plugins.keys():
+        print(f" - {command_name}")
+    print(" - menu")
+    print(" - exit")
+
+def repl():
+    calc = Calculator()
+    plugins = load_plugins()
+    show_menu(plugins)
+    while True:
+        operation = input("Enter command or 'menu' to see available commands, or 'exit' to quit: ").lower()
+        if operation == 'exit':
+            break
+        elif operation == 'menu':
+            show_menu(plugins)
+        elif operation in plugins:
+            try:
+                a = float(input("Enter first number: "))
+                b = float(input("Enter second number: "))
+            except ValueError:
+                print("Invalid number. Try again.")
+                continue
+
+            command = plugins[operation](a, b)
+            result = calc.execute_command(command)
+            print(f"Result: {result}")
         else:
-            return f"Unknown operation: {operation}"
+            print("Unknown  command. Try again.")
+
+if __name__ == "__main__":
+    repl()
