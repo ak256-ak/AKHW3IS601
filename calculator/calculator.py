@@ -23,7 +23,7 @@ class Calculator:
         process.join()
 
         result = result_queue.get()
-        command.result = result  # Store the result in the command
+        command.result = result  
         Calculator.history.append(command)
         return result
 
