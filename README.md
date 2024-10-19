@@ -17,3 +17,7 @@ You can add, subtract, divide and multiplication
 #Resources
 https://www.w3schools.com/python/python_classes.asp
 https://medium.com/the-modern-scientist/python-classes-made-easy-a-beginners-guide-c9634ddca518
+
+
+To check the percentage type 
+pytest --cov=.
